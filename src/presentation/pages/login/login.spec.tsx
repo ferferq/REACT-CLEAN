@@ -15,7 +15,7 @@ const makeSut = (): SutTypes => {
 };
 
 describe('Login Component', () => {
-  test('Should start with initial state', () => {
+  test('Should start with initial states', () => {
     const { sut } = makeSut();
     const formStatus = sut.getByTestId('error-wrap');
     expect(formStatus.childElementCount).toBe(0);
