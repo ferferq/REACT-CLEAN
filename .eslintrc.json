@@ -1,0 +1,28 @@
+{
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "extends": [
+    "standard-with-typescript",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "plugin:react/recommended"
+  ],
+  "plugins": ["react"],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/camelcase": "off",
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "prettier/prettier": ["error", { "endOfLine": "auto" }],
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "react/prop-types": "off"
+  }
+}
