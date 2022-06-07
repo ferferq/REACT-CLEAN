@@ -23,7 +23,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     email: '',
     password: '',
     emailError: '',
-    passwordError: 'Campo obrigatório',
+    passwordError: '',
     mainError: '',
   });
 
@@ -39,17 +39,26 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     event.preventDefault();
-    const inputErrors = [!!state.emailError, !!state.passwordError].includes(
-      true,
-    );
-    if (state.isLoading || inputErrors) {
-      return;
+    try {
+      const inputErrors = [!!state.emailError, !!state.passwordError].includes(
+        true,
+      );
+
+      if (state.isLoading || inputErrors) {
+        return;
+      }
+      setState({ ...state, isLoading: true });
+      await authentication.auth({
+        email: state.email,
+        password: state.password,
+      });
+    } catch (error) {
+      setState({
+        ...state,
+        isLoading: false,
+        mainError: error.message,
+      });
     }
-    setState({ ...state, isLoading: true });
-    await authentication.auth({
-      email: state.email,
-      password: state.password,
-    });
   };
 
   return (
