@@ -11,7 +11,7 @@ import ContextForm from '@/presentation/contexts/form/form-context';
 import Styles from './login-styles.scss';
 import { Validation } from '@/presentation/protocols/validation';
 import { Authentication } from '@/domain/usecases';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 type Props = {
   validation: Validation;
@@ -19,6 +19,7 @@ type Props = {
 };
 
 const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
+  const navigate = useNavigate();
   const [state, setState] = useState({
     isLoading: false,
     email: '',
@@ -54,6 +55,9 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
         password: state.password,
       });
       localStorage.setItem('accessToken', account.accessToken);
+      navigate('/', {
+        replace: true,
+      });
     } catch (error) {
       setState({
         ...state,
