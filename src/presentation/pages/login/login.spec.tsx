@@ -1,4 +1,7 @@
 import React from 'react';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
+import 'jest-localstorage-mock';
 import {
   cleanup,
   fireEvent,
@@ -21,12 +24,15 @@ type SutParams = {
   validationError?: string;
 };
 
+const history = createMemoryHistory();
 const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub();
   const authenticationSpy = new AuthenticationSpy();
   validationStub.errorMessage = params?.validationError;
   const sut = render(
-    <Login validation={validationStub} authentication={authenticationSpy} />,
+    <Router location={history.location} navigator={history}>
+      <Login validation={validationStub} authentication={authenticationSpy} />
+    </Router>,
   );
 
   return {
@@ -80,6 +86,10 @@ const simulateStatusForField = (
 
 describe('Login Component', () => {
   afterEach(cleanup);
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
 
   test('Should start with initial state', () => {
     const validationError = faker.random.words();
@@ -217,5 +227,26 @@ describe('Login Component', () => {
       expect(errorWrap.childElementCount).toBe(1);
       expect(mainError.textContent).toBe(error.message);
     });
+  });
+
+  test('Should add accessToken to localStorage on success', async () => {
+    const { sut, authenticationSpy } = makeSut();
+    simulateValidSubmit({
+      sut,
+    });
+    await waitFor(() => {
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'accessToken',
+        authenticationSpy.account.accessToken,
+      );
+    });
+  });
+
+  test('Should go to signup page', () => {
+    const { sut } = makeSut();
+    const signup = sut.getByTestId('signup');
+    fireEvent.click(signup);
+    expect(history.location.pathname).toBe('/signup');
+    expect(history.index).toBe(1);
   });
 });
