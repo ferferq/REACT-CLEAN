@@ -1,5 +1,5 @@
 import { RequiredFieldError } from '@/validation/errors';
-import { RequiredFieldValidation } from '@/validation/required-field';
+import { RequiredFieldValidation } from '@/validation/validators/required-field';
 import faker from 'faker';
 
 const makeSut = (): RequiredFieldValidation => {
