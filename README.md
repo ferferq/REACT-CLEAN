@@ -1,1 +1,2 @@
 [![Build Status](https://app.travis-ci.com/ferferq/REACT-CLEAN.svg?branch=main)](https://app.travis-ci.com/ferferq/REACT-CLEAN)
+[![Coverage Status](https://coveralls.io/repos/github/ferferq/REACT-CLEAN/badge.svg?branch=main)](https://coveralls.io/github/ferferq/REACT-CLEAN?branch=main)
