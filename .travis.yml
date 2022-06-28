@@ -1,6 +1,4 @@
-language: node_js
-node_js:
-  - 12
-scrpit:
-  - eslint 'src/**'
-  - npm run test:ci
+language: ruby
+rvm:
+ - 2.2
+ - jruby
