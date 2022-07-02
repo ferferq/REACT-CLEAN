@@ -1,4 +1,3 @@
-import { cleanup } from '@testing-library/react';
 import faker from 'faker';
 import 'jest-localstorage-mock';
 import { LocalStorageAdapter } from './local-storage-adapter';
@@ -6,8 +5,6 @@ import { LocalStorageAdapter } from './local-storage-adapter';
 const makeSut = (): LocalStorageAdapter => new LocalStorageAdapter();
 
 describe('LocalStorageAdapter', () => {
-  afterEach(cleanup);
-
   beforeEach(() => {
     localStorage.clear();
   });
