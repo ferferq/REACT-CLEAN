@@ -17,6 +17,7 @@ import {
 } from '@/presentation/test';
 import faker from 'faker';
 import { InvalidCredentialsError } from '@/domain/errors';
+import { populateField } from '@/presentation/test/form-helper';
 
 type SutTypes = {
   sut: RenderResult;
@@ -60,31 +61,18 @@ const simulateValidSubmit = ({
   password = faker.internet.password(),
   email = faker.internet.email(),
 }): void => {
-  populatePasswordField({
+  populateField({
     sut,
-    password,
+    fieldName: 'password',
+    value: password,
   });
-  populateEmailField({
+  populateField({
     sut,
-    email,
+    fieldName: 'email',
+    value: email,
   });
   const form = sut.getByTestId('form');
   fireEvent.submit(form);
-};
-
-const populateEmailField = ({ sut, email = faker.internet.email() }): void => {
-  const emailInput = sut.getByTestId('email');
-  fireEvent.input(emailInput, { target: { value: email } });
-};
-
-const populatePasswordField = ({
-  sut,
-  password = faker.internet.password(),
-}): void => {
-  const passwordInput = sut.getByTestId('password');
-  fireEvent.input(passwordInput, {
-    target: { value: password },
-  });
 };
 
 const testElementExists = (sut: RenderResult, fieldName: string): void => {
@@ -154,8 +142,9 @@ describe('Login Component', () => {
   test('Should show email error if Validation fails', () => {
     const validationError = faker.random.words();
     const { sut } = makeSut({ validationError });
-    populateEmailField({
+    populateField({
       sut,
+      fieldName: 'email',
     });
     Helper.testStatusForField(sut, 'email', validationError);
   });
@@ -163,35 +152,40 @@ describe('Login Component', () => {
   test('Should show password error if Validation fails', () => {
     const validationError = faker.random.words();
     const { sut } = makeSut({ validationError });
-    populatePasswordField({
+    populateField({
       sut,
+      fieldName: 'password',
     });
     Helper.testStatusForField(sut, 'password', validationError);
   });
 
   test('Should show valid email state if Validation succeeds', () => {
     const { sut } = makeSut();
-    populateEmailField({
+    populateField({
       sut,
+      fieldName: 'email',
     });
     Helper.testStatusForField(sut, 'email');
   });
 
   test('Should show valid password state if Validation succeeds', () => {
     const { sut } = makeSut();
-    populatePasswordField({
+    populateField({
       sut,
+      fieldName: 'password',
     });
     Helper.testStatusForField(sut, 'password');
   });
 
   test('Should enable submit button if form is valid', () => {
     const { sut } = makeSut();
-    populatePasswordField({
+    populateField({
       sut,
+      fieldName: 'password',
     });
-    populateEmailField({
+    populateField({
       sut,
+      fieldName: 'email',
     });
     Helper.testButtonIsDisabled(sut, 'submit', false);
   });

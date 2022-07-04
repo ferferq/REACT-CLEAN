@@ -1,4 +1,5 @@
-import { RenderResult } from '@testing-library/react';
+import { fireEvent, RenderResult } from '@testing-library/react';
+import faker from 'faker';
 
 export const testChildCount = (
   sut: RenderResult,
@@ -26,4 +27,21 @@ export const testStatusForField = (
   const fieldStatus = sut.getByTestId(`${fieldName}-status`);
   expect(fieldStatus.title).toBe(validationError || 'Tudo certo!');
   expect(fieldStatus.textContent).toBe(validationError ? '🔴' : '🟢');
+};
+
+type populateFieldProps = {
+  sut: RenderResult;
+  fieldName: string;
+  value?: string;
+};
+
+export const populateField = ({
+  sut,
+  fieldName,
+  value = faker.internet.password(),
+}: populateFieldProps): void => {
+  const elementInput = sut.getByTestId(fieldName);
+  fireEvent.input(elementInput, {
+    target: { value: value },
+  });
 };

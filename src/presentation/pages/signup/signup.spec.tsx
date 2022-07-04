@@ -1,13 +1,9 @@
 import faker from 'faker';
 import React from 'react';
-import {
-  cleanup,
-  fireEvent,
-  render,
-  RenderResult,
-} from '@testing-library/react';
+import { cleanup, render, RenderResult } from '@testing-library/react';
 import { Signup } from './signup';
 import { Helper, ValidationStub } from '@/presentation/test';
+import { populateField } from '@/presentation/test/form-helper';
 
 type SutTypes = {
   sut: RenderResult;
@@ -27,23 +23,6 @@ const makeSut = (params?: SutParams): SutTypes => {
     sut,
     validationStub,
   };
-};
-
-type populateFieldProps = {
-  sut: RenderResult;
-  fieldName: string;
-  value?: string;
-};
-
-const populateField = ({
-  sut,
-  fieldName,
-  value = faker.internet.password(),
-}: populateFieldProps): void => {
-  const elementInput = sut.getByTestId(fieldName);
-  fireEvent.input(elementInput, {
-    target: { value: value },
-  });
 };
 
 describe('Login Component', () => {
