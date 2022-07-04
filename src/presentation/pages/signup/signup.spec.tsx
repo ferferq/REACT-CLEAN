@@ -1,21 +1,72 @@
+import faker from 'faker';
 import React from 'react';
-import { render, RenderResult } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  RenderResult,
+} from '@testing-library/react';
 import { Signup } from './signup';
-import { Helper } from '@/presentation/test';
+import { Helper, ValidationStub } from '@/presentation/test';
 
-const makeSut = (): RenderResult => {
-  return render(<Signup />);
+type SutTypes = {
+  sut: RenderResult;
+  validationStub: ValidationStub;
+};
+
+type SutParams = {
+  validationError?: string;
+};
+
+const makeSut = (params?: SutParams): SutTypes => {
+  const validationStub = new ValidationStub();
+  validationStub.errorMessage = params?.validationError;
+  const sut = render(<Signup validation={validationStub} />);
+
+  return {
+    sut,
+    validationStub,
+  };
+};
+
+type populateFieldProps = {
+  sut: RenderResult;
+  fieldName: string;
+  value?: string;
+};
+
+const populateField = ({
+  sut,
+  fieldName,
+  value = faker.internet.password(),
+}: populateFieldProps): void => {
+  const elementInput = sut.getByTestId(fieldName);
+  fireEvent.input(elementInput, {
+    target: { value: value },
+  });
 };
 
 describe('Login Component', () => {
+  afterEach(cleanup);
+
   test('Should start with initial state', () => {
-    const validationError = 'Campo obrigatório';
-    const sut = makeSut();
+    const validationError = faker.random.words();
+    const { sut } = makeSut({ validationError });
     Helper.testChildCount(sut, 'error-wrap', 0);
     Helper.testButtonIsDisabled(sut, 'submit', true);
     Helper.testStatusForField(sut, 'name', validationError);
-    Helper.testStatusForField(sut, 'email', validationError);
-    Helper.testStatusForField(sut, 'password', validationError);
-    Helper.testStatusForField(sut, 'passwordConfirmation', validationError);
+    Helper.testStatusForField(sut, 'email', 'Campo obrigatório');
+    Helper.testStatusForField(sut, 'password', 'Campo obrigatório');
+    Helper.testStatusForField(sut, 'passwordConfirmation', 'Campo obrigatório');
+  });
+
+  test('Should show name error if Validation fails', () => {
+    const validationError = faker.random.words();
+    const { sut } = makeSut({ validationError });
+    populateField({
+      sut,
+      fieldName: 'name',
+    });
+    Helper.testStatusForField(sut, 'name', validationError);
   });
 });
