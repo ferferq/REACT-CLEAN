@@ -1,6 +1,11 @@
 import faker from 'faker';
 import React from 'react';
-import { cleanup, render, RenderResult } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  RenderResult,
+} from '@testing-library/react';
 import { Signup } from './signup';
 import { Helper, ValidationStub } from '@/presentation/test';
 import { populateField } from '@/presentation/test/form-helper';
@@ -25,6 +30,23 @@ const makeSut = (params?: SutParams): SutTypes => {
   };
 };
 
+const testNthCalledWithValidateMocked = (
+  sut: RenderResult,
+  validationStub: ValidationStub,
+  nthCalled: number,
+  fieldName: string,
+  valueInput: string,
+): void => {
+  const element = sut.getByTestId(fieldName);
+  const validateMocked = jest.spyOn(validationStub, 'validate');
+  fireEvent.input(element, { target: { value: valueInput } });
+  expect(validateMocked).toHaveBeenNthCalledWith(
+    nthCalled,
+    fieldName,
+    valueInput,
+  );
+};
+
 describe('Login Component', () => {
   afterEach(cleanup);
 
@@ -47,5 +69,12 @@ describe('Login Component', () => {
       fieldName: 'name',
     });
     Helper.testStatusForField(sut, 'name', validationError);
+  });
+
+  test('Should call Validation with correct to name', () => {
+    const validationError = faker.random.words();
+    const { sut, validationStub } = makeSut({ validationError });
+    const name = faker.name.firstName();
+    testNthCalledWithValidateMocked(sut, validationStub, 1, 'name', name);
   });
 });
