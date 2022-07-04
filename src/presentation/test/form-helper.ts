@@ -1,5 +1,6 @@
 import { fireEvent, RenderResult } from '@testing-library/react';
 import faker from 'faker';
+import { ValidationStub } from './mock-validation';
 
 export const testChildCount = (
   sut: RenderResult,
@@ -44,4 +45,21 @@ export const populateField = ({
   fireEvent.input(elementInput, {
     target: { value: value },
   });
+};
+
+export const testNthCalledWithValidateMocked = (
+  sut: RenderResult,
+  validationStub: ValidationStub,
+  nthCalled: number,
+  fieldName: string,
+  valueInput: string,
+): void => {
+  const element = sut.getByTestId(fieldName);
+  const validateMocked = jest.spyOn(validationStub, 'validate');
+  fireEvent.input(element, { target: { value: valueInput } });
+  expect(validateMocked).toHaveBeenNthCalledWith(
+    nthCalled,
+    fieldName,
+    valueInput,
+  );
 };

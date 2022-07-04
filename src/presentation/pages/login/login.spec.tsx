@@ -17,7 +17,10 @@ import {
 } from '@/presentation/test';
 import faker from 'faker';
 import { InvalidCredentialsError } from '@/domain/errors';
-import { populateField } from '@/presentation/test/form-helper';
+import {
+  populateField,
+  testNthCalledWithValidateMocked,
+} from '@/presentation/test/form-helper';
 
 type SutTypes = {
   sut: RenderResult;
@@ -87,23 +90,6 @@ const testElementText = (
 ): void => {
   const element = sut.getByTestId(fieldName);
   expect(element.textContent).toBe(text);
-};
-
-const testNthCalledWithValidateMocked = (
-  sut: RenderResult,
-  validationStub: ValidationStub,
-  nthCalled: number,
-  fieldName: string,
-  valueInput: string,
-): void => {
-  const element = sut.getByTestId(fieldName);
-  const validateMocked = jest.spyOn(validationStub, 'validate');
-  fireEvent.input(element, { target: { value: valueInput } });
-  expect(validateMocked).toHaveBeenNthCalledWith(
-    nthCalled,
-    fieldName,
-    valueInput,
-  );
 };
 
 describe('Login Component', () => {
