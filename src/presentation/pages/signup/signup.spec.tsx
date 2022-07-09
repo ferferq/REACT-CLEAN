@@ -147,4 +147,13 @@ describe('Login Component', () => {
     });
     Helper.testStatusForField(sut, 'name');
   });
+
+  test('Should show valid status if validation email is succeeds', () => {
+    const { sut } = makeSut({});
+    populateField({
+      sut,
+      fieldName: 'email',
+    });
+    Helper.testStatusForField(sut, 'email');
+  });
 });
