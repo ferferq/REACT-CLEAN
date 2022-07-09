@@ -156,4 +156,13 @@ describe('Login Component', () => {
     });
     Helper.testStatusForField(sut, 'password');
   });
+
+  test('Should show valid status if validation passwordConfirmation is succeeds', () => {
+    const { sut } = makeSut({});
+    populateField({
+      sut,
+      fieldName: 'passwordConfirmation',
+    });
+    Helper.testStatusForField(sut, 'passwordConfirmation');
+  });
 });
