@@ -53,13 +53,15 @@ export const testNthCalledWithValidateMocked = (
   nthCalled: number,
   fieldName: string,
   valueInput: string,
+  nthCalledPosition = 1,
 ): void => {
   const element = sut.getByTestId(fieldName);
   const validateMocked = jest.spyOn(validationStub, 'validate');
   fireEvent.input(element, { target: { value: valueInput } });
   expect(validateMocked).toHaveBeenNthCalledWith(
-    nthCalled,
+    nthCalledPosition,
     fieldName,
     valueInput,
   );
+  expect(validateMocked).toBeCalledTimes(nthCalled);
 };

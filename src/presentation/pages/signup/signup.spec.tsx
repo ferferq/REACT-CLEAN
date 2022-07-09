@@ -28,6 +28,8 @@ const makeSut = (params?: SutParams): SutTypes => {
   };
 };
 
+const nthCalled = 2;
+
 describe('Login Component', () => {
   afterEach(cleanup);
 
@@ -37,7 +39,7 @@ describe('Login Component', () => {
     Helper.testChildCount(sut, 'error-wrap', 0);
     Helper.testButtonIsDisabled(sut, 'submit', true);
     Helper.testStatusForField(sut, 'name', validationError);
-    Helper.testStatusForField(sut, 'email', 'Campo obrigatório');
+    Helper.testStatusForField(sut, 'email', validationError);
     Helper.testStatusForField(sut, 'password', 'Campo obrigatório');
     Helper.testStatusForField(sut, 'passwordConfirmation', 'Campo obrigatório');
   });
@@ -56,6 +58,36 @@ describe('Login Component', () => {
     const validationError = faker.random.words();
     const { sut, validationStub } = makeSut({ validationError });
     const name = faker.name.firstName();
-    testNthCalledWithValidateMocked(sut, validationStub, 1, 'name', name);
+    testNthCalledWithValidateMocked(
+      sut,
+      validationStub,
+      nthCalled,
+      'name',
+      name,
+    );
+  });
+
+  test('Should show email error if Validation fails', () => {
+    const validationError = faker.random.words();
+    const { sut } = makeSut({ validationError });
+    populateField({
+      sut,
+      fieldName: 'email',
+    });
+    Helper.testStatusForField(sut, 'email', validationError);
+  });
+
+  test('Should call Validation with correct to email', () => {
+    const validationError = faker.random.words();
+    const { sut, validationStub } = makeSut({ validationError });
+    const email = faker.internet.email();
+    testNthCalledWithValidateMocked(
+      sut,
+      validationStub,
+      nthCalled,
+      'email',
+      email,
+      2,
+    );
   });
 });
