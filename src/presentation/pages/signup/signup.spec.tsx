@@ -28,7 +28,7 @@ const makeSut = (params?: SutParams): SutTypes => {
   };
 };
 
-const nthCalled = 2;
+const nthCalled = 4;
 
 describe('Login Component', () => {
   afterEach(cleanup);
@@ -40,8 +40,8 @@ describe('Login Component', () => {
     Helper.testButtonIsDisabled(sut, 'submit', true);
     Helper.testStatusForField(sut, 'name', validationError);
     Helper.testStatusForField(sut, 'email', validationError);
-    Helper.testStatusForField(sut, 'password', 'Campo obrigatório');
-    Helper.testStatusForField(sut, 'passwordConfirmation', 'Campo obrigatório');
+    Helper.testStatusForField(sut, 'password', validationError);
+    Helper.testStatusForField(sut, 'passwordConfirmation', validationError);
   });
 
   test('Should show name error if Validation fails', () => {
@@ -88,6 +88,54 @@ describe('Login Component', () => {
       'email',
       email,
       2,
+    );
+  });
+
+  test('Should show password error if Validation fails', () => {
+    const validationError = faker.random.words();
+    const { sut } = makeSut({ validationError });
+    populateField({
+      sut,
+      fieldName: 'password',
+    });
+    Helper.testStatusForField(sut, 'password', validationError);
+  });
+
+  test('Should call Validation with correct to email', () => {
+    const validationError = faker.random.words();
+    const { sut, validationStub } = makeSut({ validationError });
+    const password = faker.internet.password();
+    testNthCalledWithValidateMocked(
+      sut,
+      validationStub,
+      nthCalled,
+      'password',
+      password,
+      3,
+    );
+  });
+
+  test('Should show passwordConfirmation error if Validation fails', () => {
+    const validationError = faker.random.words();
+    const { sut } = makeSut({ validationError });
+    populateField({
+      sut,
+      fieldName: 'passwordConfirmation',
+    });
+    Helper.testStatusForField(sut, 'passwordConfirmation', validationError);
+  });
+
+  test('Should call Validation with correct to email', () => {
+    const validationError = faker.random.words();
+    const { sut, validationStub } = makeSut({ validationError });
+    const passwordConfirmation = faker.internet.password();
+    testNthCalledWithValidateMocked(
+      sut,
+      validationStub,
+      nthCalled,
+      'passwordConfirmation',
+      passwordConfirmation,
+      4,
     );
   });
 });
