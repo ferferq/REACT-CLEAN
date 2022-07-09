@@ -138,4 +138,13 @@ describe('Login Component', () => {
       4,
     );
   });
+
+  test('Should show valid status if validation name is succeeds', () => {
+    const { sut } = makeSut({});
+    populateField({
+      sut,
+      fieldName: 'name',
+    });
+    Helper.testStatusForField(sut, 'name');
+  });
 });
