@@ -165,4 +165,25 @@ describe('Login Component', () => {
     });
     Helper.testStatusForField(sut, 'passwordConfirmation');
   });
+
+  test('Should enable submit button if form is valid', () => {
+    const { sut } = makeSut();
+    populateField({
+      sut,
+      fieldName: 'name',
+    });
+    populateField({
+      sut,
+      fieldName: 'email',
+    });
+    populateField({
+      sut,
+      fieldName: 'password',
+    });
+    populateField({
+      sut,
+      fieldName: 'passwordConfirmation',
+    });
+    Helper.testButtonIsDisabled(sut, 'submit', false);
+  });
 });
