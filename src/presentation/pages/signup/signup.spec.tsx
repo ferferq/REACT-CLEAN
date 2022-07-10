@@ -13,10 +13,12 @@ import {
   testElementExists,
   testNthCalledWithValidateMocked,
 } from '@/presentation/test/form-helper';
+import { AddAccountSpy } from '@/presentation/test/mock-add-account';
 
 type SutTypes = {
   sut: RenderResult;
   validationStub: ValidationStub;
+  addAccountSpy: AddAccountSpy;
 };
 
 type SutParams = {
@@ -25,12 +27,16 @@ type SutParams = {
 
 const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub();
+  const addAccountSpy = new AddAccountSpy();
   validationStub.errorMessage = params?.validationError;
-  const sut = render(<Signup validation={validationStub} />);
+  const sut = render(
+    <Signup validation={validationStub} addAccount={addAccountSpy} />,
+  );
 
   return {
     sut,
     validationStub,
+    addAccountSpy,
   };
 };
 
@@ -230,5 +236,26 @@ describe('Login Component', () => {
       sut,
     });
     testElementExists(sut, 'spinner');
+  });
+
+  test('Should call AddAccount with correct values', () => {
+    const { sut, addAccountSpy } = makeSut();
+    const name = faker.name.firstName();
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+
+    simulateValidSubmit({
+      sut,
+      name,
+      email,
+      password,
+      passwordConfirmation: password,
+    });
+    expect(addAccountSpy.params).toEqual({
+      name,
+      email,
+      password,
+      passwordConfirmation: password,
+    });
   });
 });
