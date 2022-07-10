@@ -19,6 +19,7 @@ import faker from 'faker';
 import { InvalidCredentialsError } from '@/domain/errors';
 import {
   populateField,
+  testElementExists,
   testNthCalledWithValidateMocked,
 } from '@/presentation/test/form-helper';
 
@@ -76,11 +77,6 @@ const simulateValidSubmit = ({
   });
   const form = sut.getByTestId('form');
   fireEvent.submit(form);
-};
-
-const testElementExists = (sut: RenderResult, fieldName: string): void => {
-  const element = sut.getByTestId(fieldName);
-  expect(element).toBeTruthy();
 };
 
 const testElementText = (

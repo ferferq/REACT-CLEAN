@@ -10,6 +10,7 @@ import { Signup } from './signup';
 import { Helper, ValidationStub } from '@/presentation/test';
 import {
   populateField,
+  testElementExists,
   testNthCalledWithValidateMocked,
 } from '@/presentation/test/form-helper';
 
@@ -64,11 +65,6 @@ const simulateValidSubmit = ({
   });
   const form = sut.getByTestId('form');
   fireEvent.submit(form);
-};
-
-const testElementExists = (sut: RenderResult, fieldName: string): void => {
-  const element = sut.getByTestId(fieldName);
-  expect(element).toBeTruthy();
 };
 
 describe('Login Component', () => {
