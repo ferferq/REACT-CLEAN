@@ -53,7 +53,7 @@ export const testNthCalledWithValidateMocked = (
   nthCalled: number,
   fieldName: string,
   valueInput: string,
-  nthCalledPosition = 1,
+  nthCalledPosition: number,
   valuesCalled?: any[],
 ): void => {
   const element = sut.getByTestId(fieldName);
