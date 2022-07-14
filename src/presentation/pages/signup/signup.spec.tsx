@@ -5,6 +5,7 @@ import {
   fireEvent,
   render,
   RenderResult,
+  waitFor,
 } from '@testing-library/react';
 import { Signup } from './signup';
 import { Helper, ValidationStub } from '@/presentation/test';
@@ -14,6 +15,7 @@ import {
   testNthCalledWithValidateMocked,
 } from '@/presentation/test/form-helper';
 import { AddAccountSpy } from '@/presentation/test/mock-add-account';
+import { EmailInUseError } from '@/domain/errors';
 
 type SutTypes = {
   sut: RenderResult;
@@ -71,6 +73,15 @@ const simulateValidSubmit = ({
   });
   const form = sut.getByTestId('form');
   fireEvent.submit(form);
+};
+
+const testElementText = (
+  sut: RenderResult,
+  fieldName: string,
+  text: string,
+): void => {
+  const element = sut.getByTestId(fieldName);
+  expect(element.textContent).toBe(text);
 };
 
 describe('Login Component', () => {
@@ -277,5 +288,18 @@ describe('Login Component', () => {
       sut,
     });
     expect(addAccountSpy.callsCount).toBe(0);
+  });
+
+  test('Should present error if Authentication fails', async () => {
+    const { sut, addAccountSpy } = makeSut();
+    const error = new EmailInUseError();
+    jest.spyOn(addAccountSpy, 'add').mockRejectedValueOnce(error);
+    simulateValidSubmit({
+      sut,
+    });
+    await waitFor(() => {
+      Helper.testChildCount(sut, 'error-wrap', 1);
+      testElementText(sut, 'main-error', error.message);
+    });
   });
 });
