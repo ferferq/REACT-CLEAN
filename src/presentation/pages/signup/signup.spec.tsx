@@ -21,7 +21,7 @@ import {
   testNthCalledWithValidateMocked,
 } from '@/presentation/test/form-helper';
 import { AddAccountSpy } from '@/presentation/test/mock-add-account';
-import { EmailInUseError } from '@/domain/errors';
+import { EmailInUseError, InvalidCredentialsError } from '@/domain/errors';
 
 const history = createMemoryHistory({
   initialEntries: ['/login'],
@@ -325,5 +325,26 @@ describe('Login Component', () => {
       expect(history.location.pathname).toBe('/');
       expect(history.index).toBe(0);
     });
+  });
+
+  test('Should present error if SaveAccessToken fails', async () => {
+    const { sut, saveAccessTokenMock } = makeSut();
+    const error = new InvalidCredentialsError();
+    jest.spyOn(saveAccessTokenMock, 'save').mockRejectedValueOnce(error);
+    simulateValidSubmit({
+      sut,
+    });
+    await waitFor(() => {
+      Helper.testChildCount(sut, 'error-wrap', 1);
+      Helper.testElementText(sut, 'main-error', error.message);
+    });
+  });
+
+  test('Should go to login page', () => {
+    const { sut } = makeSut();
+    const loginLink = sut.getByTestId('login-link');
+    fireEvent.click(loginLink);
+    expect(history.location.pathname).toBe('/login');
+    expect(history.index).toBe(0);
   });
 });
