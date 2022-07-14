@@ -252,6 +252,6 @@ describe('Login Component', () => {
     const signup = sut.getByTestId('signup');
     fireEvent.click(signup);
     expect(history.location.pathname).toBe('/signup');
-    expect(history.index).toBe(1);
+    expect(history.index).toBe(0);
   });
 });

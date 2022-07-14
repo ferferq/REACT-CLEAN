@@ -1,0 +1,11 @@
+.submit {
+  &:disabled {
+    background-color: $disabledBackground;
+    color: $disabledColor;
+    cursor: default;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

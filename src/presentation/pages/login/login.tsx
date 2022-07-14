@@ -12,6 +12,7 @@ import Styles from './login-styles.scss';
 import { Validation } from '@/presentation/protocols/validation';
 import { Authentication, SaveAccessToken } from '@/domain/usecases';
 import { Link, useNavigate } from 'react-router-dom';
+import { SubmitButton } from '@/presentation/components/submit-button/submit-button';
 
 type Props = {
   validation: Validation;
@@ -27,6 +28,7 @@ const Login: React.FC<Props> = ({
   const navigate = useNavigate();
   const [state, setState] = useState({
     isLoading: false,
+    isFormInvalid: true,
     email: '',
     password: '',
     emailError: '',
@@ -35,10 +37,14 @@ const Login: React.FC<Props> = ({
   });
 
   useEffect(() => {
+    const emailError = validation.validate('email', state.email);
+    const passwordError = validation.validate('password', state.password);
+    const isFormInvalid = [!!emailError, !!passwordError].includes(true);
     setState({
       ...state,
-      emailError: validation.validate('email', state.email),
-      passwordError: validation.validate('password', state.password),
+      emailError,
+      passwordError,
+      isFormInvalid,
     });
   }, [state.email, state.password]);
 
@@ -88,14 +94,13 @@ const Login: React.FC<Props> = ({
             name="password"
             placeholder="Digite seu e-mail"
           />
-          <button
+          <SubmitButton
             data-testid="submit"
-            disabled={!!state.emailError || !!state.passwordError}
+            disabled={state.isFormInvalid}
             className={Styles.submit}
             type="submit"
-          >
-            Entrar
-          </button>
+            text="Entrar"
+          />
           <Link
             data-testid="signup"
             replace
