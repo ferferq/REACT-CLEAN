@@ -4,14 +4,15 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 type Props = {
   MakeLogin: React.FC;
+  MakeSignup: React.FC;
 };
 
-export const Router: React.FC<Props> = ({ MakeLogin }: Props) => {
+export const Router: React.FC<Props> = ({ MakeLogin, MakeSignup }: Props) => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<MakeLogin />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/signup" element={<MakeSignup />} />
       </Routes>
     </BrowserRouter>
   );
