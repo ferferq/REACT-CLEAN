@@ -1,3 +1,5 @@
+@import "../../styles/color.scss";
+
 .submit {
   &:disabled {
     background-color: $disabledBackground;
