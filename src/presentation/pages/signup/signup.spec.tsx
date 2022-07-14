@@ -62,6 +62,12 @@ const makeSut = (params?: SutParams): SutTypes => {
 };
 
 const nthCalled = 4;
+const valuesFieldsClear = {
+  name: '',
+  email: '',
+  password: '',
+  passwordConfirmation: '',
+};
 
 const simulateValidSubmit = ({
   sut,
@@ -128,6 +134,14 @@ describe('Login Component', () => {
       nthCalled,
       'name',
       name,
+      1,
+      [
+        'name',
+        {
+          ...valuesFieldsClear,
+          name,
+        },
+      ],
     );
   });
 
@@ -152,6 +166,13 @@ describe('Login Component', () => {
       'email',
       email,
       2,
+      [
+        'email',
+        {
+          ...valuesFieldsClear,
+          email,
+        },
+      ],
     );
   });
 
@@ -165,7 +186,7 @@ describe('Login Component', () => {
     Helper.testStatusForField(sut, 'password', validationError);
   });
 
-  test('Should call Validation with correct to email', () => {
+  test('Should call Validation with correct to password', () => {
     const validationError = faker.random.words();
     const { sut, validationStub } = makeSut({ validationError });
     const password = faker.internet.password();
@@ -176,6 +197,13 @@ describe('Login Component', () => {
       'password',
       password,
       3,
+      [
+        'password',
+        {
+          ...valuesFieldsClear,
+          password,
+        },
+      ],
     );
   });
 
@@ -189,7 +217,7 @@ describe('Login Component', () => {
     Helper.testStatusForField(sut, 'passwordConfirmation', validationError);
   });
 
-  test('Should call Validation with correct to email', () => {
+  test('Should call Validation with correct to passwordConfirmation', () => {
     const validationError = faker.random.words();
     const { sut, validationStub } = makeSut({ validationError });
     const passwordConfirmation = faker.internet.password();
@@ -200,6 +228,7 @@ describe('Login Component', () => {
       'passwordConfirmation',
       passwordConfirmation,
       4,
+      ['passwordConfirmation', { ...valuesFieldsClear, passwordConfirmation }],
     );
   });
 
