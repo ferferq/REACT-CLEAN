@@ -4,3 +4,6 @@ coverage
 public
 *.scss
 webpack.config.js
+cypress.config.ts
+src/main/test/cypress/tsconfig.json
+src/main/test/cypress/support/index.d.ts
