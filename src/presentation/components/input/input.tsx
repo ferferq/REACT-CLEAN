@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import Styles from './input-styles.scss';
 import ContextForm from '@/presentation/contexts/form/form-context';
 
@@ -8,6 +8,7 @@ type Props = React.DetailedHTMLProps<
 >;
 
 const Input: React.FC<Props> = (props: Props) => {
+  const inputRef = useRef<HTMLInputElement>();
   const { state, setState } = useContext(ContextForm);
   const error = state[`${props.name}Error`];
 
@@ -36,11 +37,20 @@ const Input: React.FC<Props> = (props: Props) => {
     <div className={Styles.inputWrap}>
       <input
         {...props}
+        ref={inputRef}
         data-testid={props.name}
         readOnly
         onFocus={enableInput}
         onChange={handleChange}
+        placeholder=" "
       />
+      <label
+        onClick={() => {
+          inputRef.current.focus();
+        }}
+      >
+        {props.placeholder}
+      </label>
       <span
         data-testid={`${props.name}-status`}
         title={getTitle()}
