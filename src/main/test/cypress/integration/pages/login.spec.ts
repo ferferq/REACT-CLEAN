@@ -161,4 +161,24 @@ describe('Login', () => {
     cy.getByTestId('submit').dblclick();
     cy.get('@request.all').should('have.length', 1);
   });
+
+  it('Should not call if form is invalid', () => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: /login/,
+      },
+      {
+        statusCode: 200,
+        body: {
+          [faker.database.column()]: faker.datatype.uuid(),
+        },
+      },
+    ).as('request');
+    cy.getByTestId('email')
+      .focus()
+      .type(faker.internet.email())
+      .type('{enter}');
+    cy.get('@request.all').should('have.length', 0);
+  });
 });
