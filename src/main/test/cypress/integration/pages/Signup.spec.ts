@@ -64,4 +64,13 @@ describe('Login', () => {
     FormHelper.testMainError('Esse e-mail já está em uso');
     HttpHelper.testUrl('/signup');
   });
+
+  it('Should present UnexpectedError on 400', () => {
+    Http.mockUnexpectedError();
+    simulateValidSubmit();
+    FormHelper.testMainError(
+      'Algo de errado aconteceu. Tente novamente em breve.',
+    );
+    HttpHelper.testUrl('/signup');
+  });
 });
