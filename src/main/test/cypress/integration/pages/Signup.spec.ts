@@ -95,6 +95,6 @@ describe('Login', () => {
     Http.mockOk();
     populateFields();
     cy.getByTestId('submit').dblclick();
-    HttpHelper.testHttpCallsCount(1);
+    HttpHelper.testHttpCallsCount(1, '@signupRequest.all');
   });
 });

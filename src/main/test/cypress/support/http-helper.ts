@@ -1,5 +1,5 @@
-export const testHttpCallsCount = (count: number): void => {
-  cy.get('@loginRequest.all').should('have.length', count);
+export const testHttpCallsCount = (count: number, mockName: string): void => {
+  cy.get(mockName).should('have.length', count);
 };
 
 export const testUrl = (path: string): void => {

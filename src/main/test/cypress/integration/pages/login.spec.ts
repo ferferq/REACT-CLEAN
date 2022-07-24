@@ -80,7 +80,7 @@ describe('Login', () => {
     Http.mockOk();
     populateFields();
     cy.getByTestId('submit').dblclick();
-    HttpHelper.testHttpCallsCount(1);
+    HttpHelper.testHttpCallsCount(1, '@loginRequest.all');
   });
 
   it('Should not call if form is invalid', () => {
@@ -89,6 +89,6 @@ describe('Login', () => {
       .focus()
       .type(faker.internet.email())
       .type('{enter}');
-    HttpHelper.testHttpCallsCount(0);
+    HttpHelper.testHttpCallsCount(0, '@loginRequest.all');
   });
 });
