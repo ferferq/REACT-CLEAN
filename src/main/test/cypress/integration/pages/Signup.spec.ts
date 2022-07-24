@@ -73,4 +73,12 @@ describe('Login', () => {
     );
     HttpHelper.testUrl('/signup');
   });
+
+  it('Should present save accessToken if valid credentials are provided', () => {
+    Http.mockOk();
+    simulateValidSubmit();
+    cy.getByTestId('error-wrap').should('not.have.descendants');
+    HttpHelper.testUrl('/');
+    FormHelper.testLocalStorageItem('accessToken');
+  });
 });
