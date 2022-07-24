@@ -1,8 +1,6 @@
 import faker from 'faker';
 import * as Helper from '../../support/http-mocks';
 
-const baseUrl: string = Cypress.config().baseUrl;
-
 export const mockInvalidCredentialsError = (): void =>
   Helper.mockInvalidCredentialsError(/login/);
 
@@ -16,11 +14,3 @@ export const mockInvalidData = (): void =>
   Helper.mockOk(/login/, 'POST', {
     [faker.database.column()]: faker.datatype.uuid(),
   });
-
-export const testHttpCallsCount = (count: number): void => {
-  cy.get('@loginRequest.all').should('have.length', count);
-};
-
-export const testUrl = (path: string): void => {
-  cy.url().should('eq', `${baseUrl}${path}`);
-};

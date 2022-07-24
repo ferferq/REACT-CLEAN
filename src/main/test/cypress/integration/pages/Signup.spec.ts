@@ -1,5 +1,16 @@
 import faker from 'faker';
 import * as FormHelper from '../../support/form-helper';
+import * as HttpHelper from '../../support/http-helper';
+import * as Http from './signup-mocks';
+
+const simulateValidSubmit = (): void => {
+  cy.getByTestId('name').focus().type(faker.datatype.string(6));
+  cy.getByTestId('email').focus().type(faker.internet.email());
+  const password = faker.internet.password();
+  cy.getByTestId('password').focus().type(password);
+  cy.getByTestId('passwordConfirmation').focus().type(password);
+  cy.getByTestId('submit').click();
+};
 
 describe('Login', () => {
   beforeEach(() => {
@@ -45,5 +56,12 @@ describe('Login', () => {
     FormHelper.testInputStatus('passwordConfirmation');
     cy.getByTestId('submit').should('not.have.attr', 'disabled');
     cy.getByTestId('error-wrap').should('not.have.descendants');
+  });
+
+  it('Should present EmailInUseError on 403', () => {
+    Http.mockEmailInUseError();
+    simulateValidSubmit();
+    FormHelper.testMainError('Esse e-mail já está em uso');
+    HttpHelper.testUrl('/signup');
   });
 });
