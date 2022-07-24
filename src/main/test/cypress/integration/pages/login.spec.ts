@@ -3,9 +3,13 @@ import * as FormHelper from '../../support/form-helper';
 import * as HttpHelper from '../../support/http-helper';
 import * as Http from './login-mocks';
 
-const simulateValidSubmit = (): void => {
+const populateFields = (): void => {
   cy.getByTestId('email').focus().type(faker.internet.email());
   cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5));
+};
+
+const simulateValidSubmit = (): void => {
+  populateFields();
   cy.getByTestId('submit').click();
 };
 
@@ -32,9 +36,8 @@ describe('Login', () => {
   });
 
   it('Should present valid state if form is valid', () => {
-    cy.getByTestId('email').focus().type(faker.internet.email());
+    populateFields();
     FormHelper.testInputStatus('email');
-    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5));
     FormHelper.testInputStatus('password');
     cy.getByTestId('submit').should('not.have.attr', 'disabled');
     cy.getByTestId('error-wrap').should('not.have.descendants');
@@ -75,8 +78,7 @@ describe('Login', () => {
 
   it('Should present multiple submits', () => {
     Http.mockOk();
-    cy.getByTestId('email').focus().type(faker.internet.email());
-    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5));
+    populateFields();
     cy.getByTestId('submit').dblclick();
     HttpHelper.testHttpCallsCount(1);
   });
