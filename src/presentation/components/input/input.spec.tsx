@@ -1,11 +1,11 @@
 import React from 'react';
-import { fireEvent, render, RenderResult } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Input } from './input';
 import Context from '@/presentation/contexts/form/form-context';
 import faker from 'faker';
 
-const makeSut = (fieldName): RenderResult => {
-  return render(
+const makeSut = (fieldName): void => {
+  render(
     <Context.Provider value={{ state: {} }}>
       <Input name={fieldName} />
     </Context.Provider>,
@@ -15,24 +15,24 @@ const makeSut = (fieldName): RenderResult => {
 describe('Input Component', () => {
   test('Should begin with readOnly', () => {
     const fieldName = faker.database.column();
-    const sut = makeSut(fieldName);
-    const input = sut.getByTestId(fieldName) as HTMLInputElement;
+    makeSut(fieldName);
+    const input = screen.getByTestId<HTMLInputElement>(fieldName);
     expect(input.readOnly).toBe(true);
   });
 
   test('Should remove readOnly on focus', () => {
     const fieldName = faker.database.column();
-    const sut = makeSut(fieldName);
-    const input = sut.getByTestId(fieldName) as HTMLInputElement;
+    makeSut(fieldName);
+    const input = screen.getByTestId<HTMLInputElement>(fieldName);
     fireEvent.focus(input);
     expect(input.readOnly).toBe(false);
   });
 
   test('Should focus input on label click', () => {
     const fieldName = faker.database.column();
-    const sut = makeSut(fieldName);
-    const input = sut.getByTestId(fieldName);
-    const label = sut.getByTestId(`${fieldName}-label`);
+    makeSut(fieldName);
+    const input = screen.getByTestId(fieldName);
+    const label = screen.getByTestId(`${fieldName}-label`);
     fireEvent.click(label);
     expect(document.activeElement).toBe(input);
   });

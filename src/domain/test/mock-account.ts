@@ -12,5 +12,6 @@ export const mockAuthentication = (): AuthenticationParams => {
 export const mockAccountModel = (): AccountModel => {
   return {
     accessToken: faker.datatype.uuid(),
+    name: faker.name.firstName(),
   };
 };

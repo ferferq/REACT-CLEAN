@@ -4,3 +4,5 @@ export * from './input/input';
 export * from './login-header/login-header';
 export * from './logo/logo';
 export * from './spinner/spinner';
+export * from './header/header';
+export * from './icon/icon';

@@ -1,0 +1,12 @@
+export type SurveyModel = {
+  id: string;
+  questiion: string;
+  answers: SurveyAnswerModel[];
+  data: Date;
+  didAnswer: boolean;
+};
+
+export type SurveyAnswerModel = {
+  image?: string;
+  answer: string;
+};
