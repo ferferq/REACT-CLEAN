@@ -37,10 +37,4 @@ describe('SurveyList page', () => {
     const { loadSurveyListSpy } = makeSut();
     expect(loadSurveyListSpy.callsCount).toBe(1);
   });
-
-  test('should render SurveyItems on sucess', () => {
-    makeSut();
-    const surveyList = screen.getByTestId('survey-list');
-    expect(surveyList.querySelectorAll('li.surveyItemWrap').length).toBe(4);
-  });
 });
