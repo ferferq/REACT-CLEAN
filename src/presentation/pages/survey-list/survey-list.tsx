@@ -1,28 +1,28 @@
-import { Footer, Header, Icon } from '@/presentation/components';
-import React from 'react';
+import { Footer, Header } from '@/presentation/components';
+import React, { useEffect } from 'react';
+import { SurveyItemEmpty } from '@/presentation/pages/survey-list/components';
 
 import Styles from './survey-list-styles.scss';
+import { LoadSurveyList } from '@/domain/usecases/load-survey-list';
 
-const SurveyList: React.FC = () => {
+type Props = {
+  loadSurveyList: LoadSurveyList;
+};
+
+const SurveyList: React.FC<Props> = ({ loadSurveyList }) => {
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    (async () => {
+      await loadSurveyList.loadAll();
+    })();
+  }, []);
   return (
     <div className={Styles.surveyListWrap}>
       <Header />
       <main className={Styles.contentWrap}>
         <h2>Enquetes</h2>
-        <ul>
-          <li>
-            <div className={Styles.surveyContent}>
-              <Icon className={Styles.iconWrap} iconName="thumbUp" />
-              <time>
-                <span className={Styles.day}>22</span>
-                <span className={Styles.month}>03</span>
-                <span className={Styles.year}>2022</span>
-              </time>
-              <p>Qual é seu framework web favorito?</p>
-            </div>
-            <footer>Ver Resultado</footer>
-          </li>
-          <li></li>
+        <ul data-testid="survey-list">
+          <SurveyItemEmpty />
         </ul>
       </main>
       <Footer />
