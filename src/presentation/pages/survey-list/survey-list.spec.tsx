@@ -37,9 +37,4 @@ describe('SurveyList page', () => {
     const { loadSurveyListSpy } = makeSut();
     expect(loadSurveyListSpy.callsCount).toBe(1);
   });
-
-  test('should call LoadSurveyList', () => {
-    const { loadSurveyListSpy } = makeSut();
-    expect(loadSurveyListSpy.callsCount).toBe(1);
-  });
 });
