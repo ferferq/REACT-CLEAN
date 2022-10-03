@@ -18,6 +18,7 @@ const SurveyList: React.FC<Props> = ({ loadSurveyList }) => {
   const [state, setState] = useState({
     surveys: [] as SurveyModel[],
     error: '',
+    reload: false,
   });
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -27,7 +28,8 @@ const SurveyList: React.FC<Props> = ({ loadSurveyList }) => {
         setState({ ...state, surveys });
       })
       .catch((error) => setState({ ...state, error: error.message }));
-  }, []);
+  }, [state.reload]);
+
   return (
     <div className={Styles.surveyListWrap}>
       <Header />
