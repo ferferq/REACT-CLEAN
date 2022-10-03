@@ -46,7 +46,7 @@ describe('SurveyList page', () => {
     makeSut();
     const surveyList = screen.getByTestId('survey-list');
     await waitFor(() => {
-      expect(surveyList.querySelectorAll('li.SurveyItemWrap')).toHaveLength(3);
+      expect(surveyList.querySelectorAll('li.surveyItemWrap')).toHaveLength(3);
       expect(screen.queryByTestId('error')).not.toBeInTheDocument();
     });
   });
