@@ -1,11 +1,11 @@
 import { mockSurveyModel } from '@/domain/test';
 import { IconName } from '@/presentation/components';
-import { SurveyItem } from '@/presentation/pages/survey-list/components';
+import { Item } from '@/presentation/pages/survey-list/components';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 const makeSut = (survey = mockSurveyModel()): void => {
-  render(<SurveyItem survey={survey} />);
+  render(<Item survey={survey} />);
 };
 
 describe('SurveyItem Component', () => {

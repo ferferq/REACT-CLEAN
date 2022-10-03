@@ -1,7 +1,7 @@
 import React from 'react';
-import Styles from './survey-item-empty-styles.scss';
+import Styles from './item-empty-styles.scss';
 
-const SurveyItemEmpty: React.FC = () => {
+const ItemEmpty: React.FC = () => {
   return (
     <>
       <li className={Styles.SurveyItemEmpty}></li>
@@ -12,4 +12,4 @@ const SurveyItemEmpty: React.FC = () => {
   );
 };
 
-export { SurveyItemEmpty };
+export { ItemEmpty };
