@@ -29,9 +29,10 @@ export const mockPostRequest = (): HttpPostParams => {
   };
 };
 
-export const mockGetRequest = (): HttpPostParams => {
+export const mockGetRequest = (): HttpGetParams => {
   return {
     url: faker.internet.url(),
+    headers: faker.random.objectElement(),
   };
 };
 
