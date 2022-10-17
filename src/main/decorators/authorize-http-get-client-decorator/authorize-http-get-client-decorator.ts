@@ -13,16 +13,13 @@ export class AuthorizeHttpGetClientDecorator implements HttpGetClient {
 
   async get(params: HttpGetParams): Promise<HttpResponse> {
     const account = this.getStorage.get('account');
-    console.log('account', account);
     if (account?.accessToken) {
-      console.log('params 1', params);
       Object.assign(params, {
-        headers: {
+        headers: Object.assign(params.headers || {}, {
           'x-access-token': account.accessToken,
-        },
+        }),
       });
     }
-    console.log('params 2', params);
     await this.httpGetClient.get(params);
     return null;
   }
