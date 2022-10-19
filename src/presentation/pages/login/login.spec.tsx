@@ -11,12 +11,12 @@ import {
   testNthCalledWithValidateMocked,
 } from '@/presentation/test/form-helper';
 import ApiContext from '@/presentation/contexts/api/api-context';
-import { AccountModel } from '@/domain/models';
+import { Authentication } from '@/domain/usecases';
 
 type SutTypes = {
   validationStub: ValidationStub;
   authenticationSpy: AuthenticationSpy;
-  setCurrentAccountMock: (account: AccountModel) => void;
+  setCurrentAccountMock: (account: Authentication.Params) => void;
 };
 
 type SutParams = {

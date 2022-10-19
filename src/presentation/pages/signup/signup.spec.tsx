@@ -12,7 +12,7 @@ import {
 import { AddAccountSpy } from '@/presentation/test/mock-add-account';
 import { EmailInUseError, InvalidCredentialsError } from '@/domain/errors';
 import ApiContext from '@/presentation/contexts/api/api-context';
-import { AccountModel } from '@/domain/models';
+import { AddAccount } from '@/domain/usecases';
 
 const history = createMemoryHistory({
   initialEntries: ['/login'],
@@ -21,7 +21,7 @@ const history = createMemoryHistory({
 type SutTypes = {
   validationStub: ValidationStub;
   addAccountSpy: AddAccountSpy;
-  setCurrentAccountMock: (account: AccountModel) => void;
+  setCurrentAccountMock: (account: AddAccount.Params) => void;
 };
 
 type SutParams = {
