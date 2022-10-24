@@ -1,4 +1,3 @@
-import { AccountModel } from '@/domain/models';
 import faker from 'faker';
 import 'jest-localstorage-mock';
 import { LocalStorageAdapter } from './local-storage-adapter';
@@ -19,6 +18,20 @@ describe('LocalStorageAdapter', () => {
       key,
       JSON.stringify(value),
     );
+  });
+
+  test('Should call localStorage.removeItem if value is undefined', () => {
+    const sut = makeSut();
+    const key = faker.database.column();
+    sut.set(key, undefined);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(key);
+  });
+
+  test('Should call localStorage.removeItem if value is null', () => {
+    const sut = makeSut();
+    const key = faker.database.column();
+    sut.set(key, null);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(key);
   });
 
   test('Should call localStorage.getItem with correct values', () => {
