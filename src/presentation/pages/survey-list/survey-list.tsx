@@ -1,5 +1,5 @@
 import { Footer, Header } from '@/presentation/components';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Error,
   SurveyContext,
@@ -8,12 +8,18 @@ import {
 
 import Styles from './survey-list-styles.scss';
 import { LoadSurveyList } from '@/domain/usecases/load-survey-list';
+import { AccessDeniedError } from '@/domain/errors';
+import { useNavigate } from 'react-router-dom';
+import apiContext from '@/presentation/contexts/api/api-context';
 
 type Props = {
   loadSurveyList: LoadSurveyList;
 };
 
 const SurveyList: React.FC<Props> = ({ loadSurveyList }) => {
+  const navigate = useNavigate();
+  const { setCurrentAccount } = useContext(apiContext);
+
   const [state, setState] = useState({
     surveys: [] as LoadSurveyList.Model[],
     error: '',
@@ -26,7 +32,14 @@ const SurveyList: React.FC<Props> = ({ loadSurveyList }) => {
       .then((surveys) => {
         setState({ ...state, surveys });
       })
-      .catch((error) => setState({ ...state, error: error.message }));
+      .catch((error) => {
+        if (error instanceof AccessDeniedError) {
+          setCurrentAccount(undefined);
+          navigate('/login');
+        } else {
+          setState({ ...state, error: error.message });
+        }
+      });
   }, [state.reload]);
 
   return (
