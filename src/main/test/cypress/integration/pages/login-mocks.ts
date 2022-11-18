@@ -1,26 +1,28 @@
 import faker from 'faker';
 import * as Helper from '../../support/http-mocks';
 
-const baseUrl: string = Cypress.config().baseUrl;
+const mockName = 'loginRequest';
 
 export const mockInvalidCredentialsError = (): void =>
-  Helper.mockInvalidCredentialsError(/login/);
+  Helper.mockInvalidCredentialsError(/login/, mockName);
 
 export const mockUnexpectedError = (): void =>
-  Helper.mockUnexpectedError(/login/, 'POST');
+  Helper.mockUnexpectedError(/login/, 'POST', mockName);
 
 export const mockOk = (): void =>
-  Helper.mockOk(/login/, 'POST', { accessToken: faker.datatype.uuid() });
+  Helper.mockOk(
+    /login/,
+    'POST',
+    { accessToken: faker.datatype.uuid(), name: faker.name.firstName() },
+    mockName,
+  );
 
 export const mockInvalidData = (): void =>
-  Helper.mockOk(/login/, 'POST', {
-    [faker.database.column()]: faker.datatype.uuid(),
-  });
-
-export const testHttpCallsCount = (count: number): void => {
-  cy.get('@loginRequest.all').should('have.length', count);
-};
-
-export const testUrl = (path: string): void => {
-  cy.url().should('eq', `${baseUrl}${path}`);
-};
+  Helper.mockOk(
+    /login/,
+    'POST',
+    {
+      [faker.database.column()]: faker.datatype.uuid(),
+    },
+    mockName,
+  );

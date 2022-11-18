@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   LoginHeader,
@@ -7,24 +7,21 @@ import {
   FormStatus,
 } from '@/presentation/components';
 import ContextForm from '@/presentation/contexts/form/form-context';
+import ApiContext from '@/presentation/contexts/api/api-context';
 
 import Styles from './login-styles.scss';
 import { Validation } from '@/presentation/protocols/validation';
-import { Authentication, SaveAccessToken } from '@/domain/usecases';
+import { Authentication } from '@/domain/usecases';
 import { Link, useNavigate } from 'react-router-dom';
 import { SubmitButton } from '@/presentation/components/submit-button/submit-button';
 
 type Props = {
   validation: Validation;
   authentication: Authentication;
-  saveAccessToken: SaveAccessToken;
 };
 
-const Login: React.FC<Props> = ({
-  validation,
-  authentication,
-  saveAccessToken,
-}: Props) => {
+const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
+  const { setCurrentAccount } = useContext(ApiContext);
   const navigate = useNavigate();
   const [state, setState] = useState({
     isLoading: false,
@@ -37,18 +34,28 @@ const Login: React.FC<Props> = ({
   });
 
   useEffect(() => {
-    const { email, password } = state;
-    const formData = { email, password };
+    const { email } = state;
+    const formData = { email };
     const emailError = validation.validate('email', formData);
-    const passwordError = validation.validate('password', formData);
-    const isFormInvalid = [!!emailError, !!passwordError].includes(true);
-    setState({
-      ...state,
+    const isFormInvalid = !!emailError;
+    setState((old) => ({
+      ...old,
       emailError,
+      isFormInvalid: isFormInvalid || !!old.passwordError,
+    }));
+  }, [state.email]);
+
+  useEffect(() => {
+    const { password } = state;
+    const formData = { password };
+    const passwordError = validation.validate('password', formData);
+    const isFormInvalid = !!passwordError;
+    setState((old) => ({
+      ...old,
       passwordError,
-      isFormInvalid,
-    });
-  }, [state.email, state.password]);
+      isFormInvalid: isFormInvalid || !!old.emailError,
+    }));
+  }, [state.password]);
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
@@ -62,26 +69,26 @@ const Login: React.FC<Props> = ({
       if (state.isLoading || inputErrors) {
         return;
       }
-      setState({ ...state, isLoading: true });
+      setState((old) => ({ ...old, isLoading: true }));
       const account = await authentication.auth({
         email: state.email,
         password: state.password,
       });
-      await saveAccessToken.save(account.accessToken);
+      setCurrentAccount(account);
       navigate('/', {
         replace: true,
       });
     } catch (error) {
-      setState({
-        ...state,
+      setState((old) => ({
+        ...old,
         isLoading: false,
         mainError: error.message,
-      });
+      }));
     }
   };
 
   return (
-    <div className={Styles.login}>
+    <div className={Styles.loginWrap}>
       <LoginHeader />
       <ContextForm.Provider value={{ state, setState }}>
         <form

@@ -1,6 +1,9 @@
 import faker from 'faker';
 
-export const mockInvalidCredentialsError = (url: RegExp): void => {
+export const mockInvalidCredentialsError = (
+  url: RegExp,
+  mockName: string,
+): void => {
   cy.intercept(
     {
       method: 'POST',
@@ -12,10 +15,29 @@ export const mockInvalidCredentialsError = (url: RegExp): void => {
         error: faker.random.words(),
       },
     },
-  ).as('loginRequest');
+  ).as(mockName);
 };
 
-export const mockUnexpectedError = (url: RegExp, method: string): void => {
+export const mockEmailInUseError = (url: RegExp, mockName: string): void => {
+  cy.intercept(
+    {
+      method: 'POST',
+      url: url,
+    },
+    {
+      statusCode: 403,
+      body: {
+        error: faker.random.words(),
+      },
+    },
+  ).as(mockName);
+};
+
+export const mockUnexpectedError = (
+  url: RegExp,
+  method: string,
+  mockName: string,
+): void => {
   cy.intercept(
     {
       method: method,
@@ -27,10 +49,15 @@ export const mockUnexpectedError = (url: RegExp, method: string): void => {
         error: faker.random.words(),
       },
     },
-  ).as('loginRequest');
+  ).as(mockName);
 };
 
-export const mockOk = (url: RegExp, method: string, body: object): void => {
+export const mockOk = (
+  url: RegExp,
+  method: string,
+  body: object,
+  mockName: string,
+): void => {
   cy.intercept(
     {
       method: method,
@@ -40,5 +67,5 @@ export const mockOk = (url: RegExp, method: string, body: object): void => {
       statusCode: 200,
       body: body,
     },
-  ).as('loginRequest');
+  ).as(mockName);
 };

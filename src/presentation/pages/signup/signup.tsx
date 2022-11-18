@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   LoginHeader,
@@ -10,21 +10,18 @@ import ContextForm from '@/presentation/contexts/form/form-context';
 
 import Styles from './signup-styles.scss';
 import { Validation } from '@/presentation/protocols/validation';
-import { AddAccount, SaveAccessToken } from '@/domain/usecases';
+import { AddAccount } from '@/domain/usecases';
 import { Link, useNavigate } from 'react-router-dom';
 import { SubmitButton } from '@/presentation/components/submit-button/submit-button';
+import apiContext from '@/presentation/contexts/api/api-context';
 
 type Props = {
   validation: Validation;
   addAccount: AddAccount;
-  saveAccessToken: SaveAccessToken;
 };
 
-const Signup: React.FC<Props> = ({
-  validation,
-  addAccount,
-  saveAccessToken,
-}: Props) => {
+const Signup: React.FC<Props> = ({ validation, addAccount }: Props) => {
+  const { setCurrentAccount } = useContext(apiContext);
   const navigate = useNavigate();
   const [state, setState] = useState({
     isLoading: false,
@@ -41,31 +38,75 @@ const Signup: React.FC<Props> = ({
   });
 
   useEffect(() => {
-    const { name, email, password, passwordConfirmation } = state;
-    const formData = { name, email, password, passwordConfirmation };
+    const { name } = state;
+    const formData = { name };
     const nameError = validation.validate('name', formData);
+    const isFormInvalid = !!nameError;
+
+    setState((old) => ({
+      ...old,
+      nameError,
+      isFormInvalid:
+        isFormInvalid ||
+        !!old.emailError ||
+        !!old.passwordError ||
+        !!old.passwordConfirmationError,
+    }));
+  }, [state.name]);
+
+  useEffect(() => {
+    const { email } = state;
+    const formData = { email };
     const emailError = validation.validate('email', formData);
+    const isFormInvalid = !!emailError;
+
+    setState((old) => ({
+      ...old,
+      emailError,
+      isFormInvalid:
+        isFormInvalid ||
+        !!old.nameError ||
+        !!old.passwordError ||
+        !!old.passwordConfirmationError,
+    }));
+  }, [state.email]);
+
+  useEffect(() => {
+    const { password } = state;
+    const formData = { password };
     const passwordError = validation.validate('password', formData);
+    const isFormInvalid = !!passwordError;
+
+    setState((old) => ({
+      ...old,
+      passwordError,
+      isFormInvalid:
+        isFormInvalid ||
+        !!old.nameError ||
+        !!old.emailError ||
+        !!old.passwordConfirmationError,
+    }));
+  }, [state.password]);
+
+  useEffect(() => {
+    const { password, passwordConfirmation } = state;
+    const formData = { password, passwordConfirmation };
     const passwordConfirmationError = validation.validate(
       'passwordConfirmation',
       formData,
     );
-    const isFormInvalid = [
-      !!nameError,
-      !!emailError,
-      !!passwordError,
-      !!passwordConfirmationError,
-    ].includes(true);
+    const isFormInvalid = !!passwordConfirmationError;
 
-    setState({
-      ...state,
-      nameError,
-      emailError,
-      passwordError,
+    setState((old) => ({
+      ...old,
       passwordConfirmationError,
-      isFormInvalid,
-    });
-  }, [state.name, state.email, state.password, state.passwordConfirmation]);
+      isFormInvalid:
+        isFormInvalid ||
+        !!old.nameError ||
+        !!old.emailError ||
+        !!old.passwordError,
+    }));
+  }, [state.passwordConfirmation]);
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
@@ -76,28 +117,28 @@ const Signup: React.FC<Props> = ({
         return;
       }
 
-      setState({ ...state, isLoading: true });
+      setState((old) => ({ ...old, isLoading: true }));
       const account = await addAccount.add({
         name: state.name,
         email: state.email,
         password: state.password,
         passwordConfirmation: state.passwordConfirmation,
       });
-      await saveAccessToken.save(account.accessToken);
+      setCurrentAccount(account);
       navigate('/', {
         replace: true,
       });
     } catch (error) {
-      setState({
-        ...state,
+      setState((old) => ({
+        ...old,
         isLoading: false,
         mainError: error.message,
-      });
+      }));
     }
   };
 
   return (
-    <div className={Styles.signup}>
+    <div className={Styles.signupWrap}>
       <LoginHeader />
       <ContextForm.Provider value={{ state, setState }}>
         <form

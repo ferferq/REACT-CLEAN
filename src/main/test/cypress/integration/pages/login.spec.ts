@@ -1,10 +1,15 @@
 import faker from 'faker';
 import * as FormHelper from '../../support/form-helper';
+import * as HttpHelper from '../../support/http-helper';
 import * as Http from './login-mocks';
 
-const simulateValidSubmit = (): void => {
+const populateFields = (): void => {
   cy.getByTestId('email').focus().type(faker.internet.email());
   cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5));
+};
+
+const simulateValidSubmit = (): void => {
+  populateFields();
   cy.getByTestId('submit').click();
 };
 
@@ -31,9 +36,8 @@ describe('Login', () => {
   });
 
   it('Should present valid state if form is valid', () => {
-    cy.getByTestId('email').focus().type(faker.internet.email());
+    populateFields();
     FormHelper.testInputStatus('email');
-    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5));
     FormHelper.testInputStatus('password');
     cy.getByTestId('submit').should('not.have.attr', 'disabled');
     cy.getByTestId('error-wrap').should('not.have.descendants');
@@ -43,7 +47,7 @@ describe('Login', () => {
     Http.mockInvalidCredentialsError();
     simulateValidSubmit();
     FormHelper.testMainError('Credentials inválidas');
-    Http.testUrl('/login');
+    HttpHelper.testUrl('/login');
   });
 
   it('Should present UnexpectedError on 400', () => {
@@ -52,15 +56,15 @@ describe('Login', () => {
     FormHelper.testMainError(
       'Algo de errado aconteceu. Tente novamente em breve.',
     );
-    Http.testUrl('/login');
+    HttpHelper.testUrl('/login');
   });
 
-  it('Should present save accessToken if valid credentials are provided', () => {
+  it('Should present save account if valid credentials are provided', () => {
     Http.mockOk();
     simulateValidSubmit();
     cy.getByTestId('error-wrap').should('not.have.descendants');
-    Http.testUrl('/');
-    FormHelper.testLocalStorageItem('accessToken');
+    HttpHelper.testUrl('/');
+    FormHelper.testLocalStorageItem('account');
   });
 
   it('Should present UnexpectedError if invalid data is returnded', () => {
@@ -69,15 +73,14 @@ describe('Login', () => {
     FormHelper.testMainError(
       'Algo de errado aconteceu. Tente novamente em breve.',
     );
-    Http.testUrl('/login');
+    HttpHelper.testUrl('/login');
   });
 
   it('Should present multiple submits', () => {
     Http.mockOk();
-    cy.getByTestId('email').focus().type(faker.internet.email());
-    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5));
+    populateFields();
     cy.getByTestId('submit').dblclick();
-    Http.testHttpCallsCount(1);
+    HttpHelper.testHttpCallsCount(1, '@loginRequest.all');
   });
 
   it('Should not call if form is invalid', () => {
@@ -86,6 +89,6 @@ describe('Login', () => {
       .focus()
       .type(faker.internet.email())
       .type('{enter}');
-    Http.testHttpCallsCount(0);
+    HttpHelper.testHttpCallsCount(0, '@loginRequest.all');
   });
 });

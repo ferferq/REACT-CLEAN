@@ -43,4 +43,10 @@ describe('MinLengthValidation', () => {
     });
     expect(error).toBeFalsy();
   });
+
+  test('Should return falsy if field not exists', () => {
+    const sut = makeSut(null);
+    const error = sut.validate({});
+    expect(error).toBeFalsy();
+  });
 });
