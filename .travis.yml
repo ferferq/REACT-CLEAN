@@ -4,3 +4,8 @@ node_js:
 scrpit:
   - eslint 'src/**'
   - npm run test:coveralls
+build:
+  provider: heroku
+  api_key: $HEROKU_API
+  app: study-react-clean
+  skip_cleanup: true
