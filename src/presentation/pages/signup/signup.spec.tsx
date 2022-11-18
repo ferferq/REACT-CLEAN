@@ -49,13 +49,7 @@ const makeSut = (params?: SutParams): SutTypes => {
   };
 };
 
-const nthCalled = 4;
-const valuesFieldsClear = {
-  name: '',
-  email: '',
-  password: '',
-  passwordConfirmation: '',
-};
+const nthCalled = 1;
 
 const simulateValidSubmit = ({
   name = faker.name.firstName(),
@@ -117,7 +111,6 @@ describe('Login Component', () => {
       [
         'name',
         {
-          ...valuesFieldsClear,
           name,
         },
       ],
@@ -142,11 +135,10 @@ describe('Login Component', () => {
       nthCalled,
       'email',
       email,
-      2,
+      1,
       [
         'email',
         {
-          ...valuesFieldsClear,
           email,
         },
       ],
@@ -171,11 +163,10 @@ describe('Login Component', () => {
       nthCalled,
       'password',
       password,
-      3,
+      1,
       [
         'password',
         {
-          ...valuesFieldsClear,
           password,
         },
       ],
@@ -200,8 +191,8 @@ describe('Login Component', () => {
       nthCalled,
       'passwordConfirmation',
       passwordConfirmation,
-      4,
-      ['passwordConfirmation', { ...valuesFieldsClear, passwordConfirmation }],
+      1,
+      ['passwordConfirmation', { password: '', passwordConfirmation }],
     );
   });
 

@@ -76,11 +76,10 @@ describe('Login Component', () => {
     const validationError = faker.random.words();
     const { validationStub } = makeSut({ validationError });
     const email = faker.internet.email();
-    testNthCalledWithValidateMocked(validationStub, 2, 'email', email, 1, [
+    testNthCalledWithValidateMocked(validationStub, 1, 'email', email, 1, [
       'email',
       {
         email,
-        password: '',
       },
     ]);
   });
@@ -92,14 +91,13 @@ describe('Login Component', () => {
     const password = faker.internet.password();
     testNthCalledWithValidateMocked(
       validationStub,
-      2,
+      1,
       'password',
       password,
-      2,
+      1,
       [
         'password',
         {
-          email: '',
           password,
         },
       ],

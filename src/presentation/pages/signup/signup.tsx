@@ -38,31 +38,75 @@ const Signup: React.FC<Props> = ({ validation, addAccount }: Props) => {
   });
 
   useEffect(() => {
-    const { name, email, password, passwordConfirmation } = state;
-    const formData = { name, email, password, passwordConfirmation };
+    const { name } = state;
+    const formData = { name };
     const nameError = validation.validate('name', formData);
+    const isFormInvalid = !!nameError;
+
+    setState((old) => ({
+      ...old,
+      nameError,
+      isFormInvalid:
+        isFormInvalid ||
+        !!old.emailError ||
+        !!old.passwordError ||
+        !!old.passwordConfirmationError,
+    }));
+  }, [state.name]);
+
+  useEffect(() => {
+    const { email } = state;
+    const formData = { email };
     const emailError = validation.validate('email', formData);
+    const isFormInvalid = !!emailError;
+
+    setState((old) => ({
+      ...old,
+      emailError,
+      isFormInvalid:
+        isFormInvalid ||
+        !!old.nameError ||
+        !!old.passwordError ||
+        !!old.passwordConfirmationError,
+    }));
+  }, [state.email]);
+
+  useEffect(() => {
+    const { password } = state;
+    const formData = { password };
     const passwordError = validation.validate('password', formData);
+    const isFormInvalid = !!passwordError;
+
+    setState((old) => ({
+      ...old,
+      passwordError,
+      isFormInvalid:
+        isFormInvalid ||
+        !!old.nameError ||
+        !!old.emailError ||
+        !!old.passwordConfirmationError,
+    }));
+  }, [state.password]);
+
+  useEffect(() => {
+    const { password, passwordConfirmation } = state;
+    const formData = { password, passwordConfirmation };
     const passwordConfirmationError = validation.validate(
       'passwordConfirmation',
       formData,
     );
-    const isFormInvalid = [
-      !!nameError,
-      !!emailError,
-      !!passwordError,
-      !!passwordConfirmationError,
-    ].includes(true);
+    const isFormInvalid = !!passwordConfirmationError;
 
-    setState({
-      ...state,
-      nameError,
-      emailError,
-      passwordError,
+    setState((old) => ({
+      ...old,
       passwordConfirmationError,
-      isFormInvalid,
-    });
-  }, [state.name, state.email, state.password, state.passwordConfirmation]);
+      isFormInvalid:
+        isFormInvalid ||
+        !!old.nameError ||
+        !!old.emailError ||
+        !!old.passwordError,
+    }));
+  }, [state.passwordConfirmation]);
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
@@ -73,7 +117,7 @@ const Signup: React.FC<Props> = ({ validation, addAccount }: Props) => {
         return;
       }
 
-      setState({ ...state, isLoading: true });
+      setState((old) => ({ ...old, isLoading: true }));
       const account = await addAccount.add({
         name: state.name,
         email: state.email,
@@ -85,11 +129,11 @@ const Signup: React.FC<Props> = ({ validation, addAccount }: Props) => {
         replace: true,
       });
     } catch (error) {
-      setState({
-        ...state,
+      setState((old) => ({
+        ...old,
         isLoading: false,
         mainError: error.message,
-      });
+      }));
     }
   };
 
