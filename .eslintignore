@@ -8,3 +8,4 @@ cypress.config.ts
 src/main/test/cypress/tsconfig.json
 src/main/test/cypress/support/index.d.ts
 dist
+index.js
