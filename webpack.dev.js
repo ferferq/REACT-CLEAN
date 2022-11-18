@@ -41,7 +41,7 @@ module.exports = merge(common, {
       template: './template.dev.html'
     }),
     new DefinePlugin({
-      'process.env.API_URL': JSON.stringify('http://fordevs.herokuapp.com/api'),
+      'process.env.API_URL': JSON.stringify('https://fordevs.herokuapp.com/api'),
     })
   ]
 });
